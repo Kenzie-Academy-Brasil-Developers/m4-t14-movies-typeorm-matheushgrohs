@@ -4,6 +4,7 @@ import createMovieService from '../services/movies/createMovie.service'
 import deleteMovieService from '../services/movies/deleteMovie.service'
 import listMoviesService from '../services/movies/listMovies.service'
 import updateMovieService from '../services/movies/updateMovie.service'
+import {IMoviesReturnAll} from '../interfaces/movie.interfaces'
 
 const createMovieController = async (request: Request, response:Response) => {
 
@@ -16,9 +17,14 @@ const createMovieController = async (request: Request, response:Response) => {
 }
 
 const listMoviesController = async (request:Request, response:Response) => {
-  const movies = await listMoviesService()
+  const {page, perPage, sort} = request.query
 
-  return response.json(movies)
+  const order = (request.query.order)?.toString().toUpperCase
+
+  const allMovies: IMoviesReturnAll = await listMoviesService(page, perPage, order, sort)
+
+  return response.status(200).json(allMovies)
+
 }
 
 const deleteMovieController = async (request:Request, response:Response) => {
